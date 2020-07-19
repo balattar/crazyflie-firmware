@@ -158,10 +158,11 @@ void controllerGtc(control_t *control, setpoint_t *setpoint,
           y = (float)state_full[1];
           z = (float)state_full[2];
 
-          state_full[3] = (double)state->attitudeQuaternion.x;
-          state_full[4] = (double)state->attitudeQuaternion.y;
-          state_full[5] = (double)state->attitudeQuaternion.z;
-          state_full[6] = (double)state->attitudeQuaternion.w;
+          
+          state_full[3] = (double)state->attitudeQuaternion.w; // scalar
+          state_full[4] = (double)state->attitudeQuaternion.x; // vector
+          state_full[5] = (double)state->attitudeQuaternion.y;
+          state_full[6] = (double)state->attitudeQuaternion.z;
 
           q1 = (float)state_full[3];
           q2 = (float)state_full[4];
