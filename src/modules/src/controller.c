@@ -10,7 +10,7 @@
 //#include "math_linear_algebra.h"
 
 
-#define DEFAULT_CONTROLLER ControllerTypePID
+#define DEFAULT_CONTROLLER ControllerTypeGTC
 static ControllerType currentController = ControllerTypeAny;
 static int numController = ControllerType_COUNT;
 
