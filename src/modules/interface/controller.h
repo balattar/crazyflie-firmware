@@ -27,12 +27,15 @@
 #define __CONTROLLER_H__
 
 #include "stabilizer_types.h"
+//#include "math_linear_algebra.h"
+
 
 typedef enum {
   ControllerTypeAny,
-  ControllerTypePID,
+  ControllerTypeGTC,
   ControllerTypeMellinger,
   ControllerTypeINDI,
+  ControllerTypePID,
   ControllerType_COUNT,
 } ControllerType;
 

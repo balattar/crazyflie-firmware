@@ -52,6 +52,7 @@
 #include "statsCnt.h"
 #include "static_mem.h"
 
+static uint32_t xy;
 static bool isInit;
 static bool emergencyStop = false;
 static int emergencyStopTimeout = EMERGENCY_STOP_TIMEOUT_DISABLED;
@@ -66,6 +67,8 @@ static setpoint_t setpoint;
 static sensorData_t sensorData;
 static state_t state;
 static control_t control;
+
+static float RREVst;
 
 static StateEstimatorType estimatorType;
 static ControllerType controllerType;
@@ -99,6 +102,7 @@ static struct {
   int16_t ratePitch;
   int16_t rateYaw;
 } stateCompressed;
+
 
 static struct {
   // position - mm
@@ -162,6 +166,29 @@ static void compressState()
   stateCompressed.rateRoll = sensorData.gyro.x * deg2millirad;
   stateCompressed.ratePitch = -sensorData.gyro.y * deg2millirad;
   stateCompressed.rateYaw = sensorData.gyro.z * deg2millirad;
+
+  float xnew, ynew;
+  xnew = state.position.x*1000.0f + 32767.0f;
+  ynew = state.position.y*1000.0f + 32767.0f;
+  //xnew = 2.357f*1000.0f + 32767.0f;
+  //ynew = -2.563f*1000.0f + 32767.0f;
+
+  xnew = (xnew < 65535) ? xnew : 65535;
+  xnew = (xnew > 0) ? xnew : 0;
+
+  ynew = (ynew < 65535) ? ynew : 65535;
+  ynew = (ynew > 0) ? ynew : 0;
+
+  
+  int16_t xx,yy;
+
+  xx = xnew;
+  yy = ynew;
+
+  //uint16_t xxx = 20345;
+  //uint16_t yyy = 1245;
+  xy = (xx | yy << 16);
+
 }
 
 static void compressSetpoint()
@@ -273,7 +300,7 @@ static void stabilizerTask(void* param)
 
       stateEstimator(&state, &sensorData, &control, tick);
       compressState();
-
+      RREVst = (state.velocity.z)/(1.50f-state.position.z);
       commanderGetSetpoint(&setpoint, &state);
       compressSetpoint();
 
@@ -655,6 +682,8 @@ LOG_ADD(LOG_FLOAT, qx, &state.attitudeQuaternion.x)
 LOG_ADD(LOG_FLOAT, qy, &state.attitudeQuaternion.y)
 LOG_ADD(LOG_FLOAT, qz, &state.attitudeQuaternion.z)
 LOG_ADD(LOG_FLOAT, qw, &state.attitudeQuaternion.w)
+
+LOG_ADD(LOG_FLOAT, RREV, &RREVst)
 LOG_GROUP_STOP(stateEstimate)
 
 LOG_GROUP_START(stateEstimateZ)
@@ -675,4 +704,12 @@ LOG_ADD(LOG_UINT32, quat, &stateCompressed.quat)           // compressed quatern
 LOG_ADD(LOG_INT16, rateRoll, &stateCompressed.rateRoll)   // angular velocity - milliradians / sec
 LOG_ADD(LOG_INT16, ratePitch, &stateCompressed.ratePitch)
 LOG_ADD(LOG_INT16, rateYaw, &stateCompressed.rateYaw)
+
+LOG_ADD(LOG_UINT32, xy, &xy)
 LOG_GROUP_STOP(stateEstimateZ)
+
+LOG_GROUP_START(stabg)
+LOG_ADD(LOG_FLOAT, c1, &setpoint.velocity.x)
+LOG_ADD(LOG_FLOAT, c2, &setpoint.velocity.y)
+LOG_ADD(LOG_FLOAT, c3, &setpoint.velocity.z)
+LOG_GROUP_STOP(stabg)

@@ -158,6 +158,13 @@ typedef struct state_s {
   acc_t acc;                // Gs (but acc.z without considering gravity)
 } state_t;
 
+/*typedef struct control_s {
+  float roll;
+  float pitch;
+  float yaw;
+  float thrust;
+} control_t;*/
+
 typedef struct control_s {
   int16_t roll;
   int16_t pitch;
@@ -182,7 +189,7 @@ typedef struct setpoint_s {
   velocity_t velocity;      // m/s
   acc_t acceleration;       // m/s^2
   bool velocity_body;       // true if velocity is given in body frame; false if velocity is given in world frame
-
+  uint8_t gtc_mode; // ONLY FOR GTC CONTROLLER
   struct {
     stab_mode_t x;
     stab_mode_t y;

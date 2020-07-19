@@ -37,6 +37,13 @@
 
 static bool motorSetEnable = false;
 
+static bool motorCmds = true;
+
+uint32_t m1;
+uint32_t m2;
+uint32_t m3;
+uint32_t m4;
+
 static struct {
   uint32_t m1;
   uint32_t m2;
@@ -77,23 +84,39 @@ void powerStop()
 
 void powerDistribution(const control_t *control)
 {
-  #ifdef QUAD_FORMATION_X
-    int16_t r = control->roll / 2.0f;
-    int16_t p = control->pitch / 2.0f;
-    motorPower.m1 = limitThrust(control->thrust - r + p + control->yaw);
-    motorPower.m2 = limitThrust(control->thrust - r - p - control->yaw);
-    motorPower.m3 =  limitThrust(control->thrust + r - p + control->yaw);
-    motorPower.m4 =  limitThrust(control->thrust + r + p - control->yaw);
-  #else // QUAD_FORMATION_NORMAL
-    motorPower.m1 = limitThrust(control->thrust + control->pitch +
-                               control->yaw);
-    motorPower.m2 = limitThrust(control->thrust - control->roll -
-                               control->yaw);
-    motorPower.m3 =  limitThrust(control->thrust - control->pitch +
-                               control->yaw);
-    motorPower.m4 =  limitThrust(control->thrust + control->roll -
-                               control->yaw);
+
+  if (!motorCmds) 
+  {
+    #ifdef QUAD_FORMATION_X
+      int16_t r = control->roll / 2.0f;
+      int16_t p = control->pitch / 2.0f;
+      //motorPower.m4 = limitThrust(control->thrust - r + p - control->yaw);
+      //motorPower.m3 = limitThrust(control->thrust - r - p + control->yaw);
+      //motorPower.m2 =  limitThrust(control->thrust + r - p - control->yaw);
+      //motorPower.m1 =  limitThrust(control->thrust + r + p + control->yaw);
+      motorPower.m4 = limitThrust(control->thrust);
+      motorPower.m3 = limitThrust(control->yaw);
+      motorPower.m2 = limitThrust(r);
+      motorPower.m1 = limitThrust(p);
+
+    #else // QUAD_FORMATION_NORMAL
+      motorPower.m1 = limitThrust(control->thrust + control->pitch +
+                                 control->yaw);
+      motorPower.m2 = limitThrust(control->thrust - control->roll -
+                                 control->yaw);
+      motorPower.m3 =  limitThrust(control->thrust - control->pitch +
+                                 control->yaw);
+      motorPower.m4 =  limitThrust(control->thrust + control->roll -
+                                 control->yaw);
   #endif
+  }
+  else
+  {
+  motorPower.m4 = limitThrust(2*(int32_t)control->thrust) ;
+  motorPower.m3 = limitThrust(2*(int32_t)control->yaw) ;
+  motorPower.m2 = limitThrust(2*(int32_t)control->roll) ; // right
+  motorPower.m1 = limitThrust(2*(int32_t)control->pitch);
+  }
 
   if (motorSetEnable)
   {
@@ -113,6 +136,7 @@ void powerDistribution(const control_t *control)
 
 PARAM_GROUP_START(motorPowerSet)
 PARAM_ADD(PARAM_UINT8, enable, &motorSetEnable)
+PARAM_ADD(PARAM_UINT8, CmdMotors, &motorCmds)
 PARAM_ADD(PARAM_UINT16, m1, &motorPowerSet.m1)
 PARAM_ADD(PARAM_UINT16, m2, &motorPowerSet.m2)
 PARAM_ADD(PARAM_UINT16, m3, &motorPowerSet.m3)
@@ -125,3 +149,5 @@ LOG_ADD(LOG_UINT32, m2, &motorPower.m2)
 LOG_ADD(LOG_UINT32, m3, &motorPower.m3)
 LOG_ADD(LOG_UINT32, m4, &motorPower.m4)
 LOG_GROUP_STOP(motor)
+
+

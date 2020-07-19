@@ -57,6 +57,8 @@ static uint16_t range_last = 0;
 
 static bool isInit;
 
+static float ceiling_height;
+
 NO_DMA_CCM_SAFE_ZERO_INIT static VL53L1_Dev_t dev;
 
 static uint16_t zRanger2GetMeasurementAndRestart(VL53L1_Dev_t *dev)
@@ -128,17 +130,19 @@ void zRanger2Task(void* arg)
 
   lastWakeTime = xTaskGetTickCount();
 
+  ceiling_height = 1.5; // set initial ceiling ceiling_height
+
   while (1) {
     vTaskDelayUntil(&lastWakeTime, M2T(25));
 
     range_last = zRanger2GetMeasurementAndRestart(&dev);
-    rangeSet(rangeDown, range_last / 1000.0f);
+    rangeSet(rangeUp, range_last / 1000.0f);
 
     // check if range is feasible and push into the estimator
     // the sensor should not be able to measure >5 [m], and outliers typically
     // occur as >8 [m] measurements
     if (range_last < RANGE_OUTLIER_LIMIT) {
-      float distance = (float)range_last * 0.001f; // Scale from [mm] to [m]
+      float distance = ceiling_height - (float)range_last * 0.001f; // Scale from [mm] to [m]
       float stdDev = expStdA * (1.0f  + expf( expCoeff * (distance - expPointA)));
       rangeEnqueueDownRangeInEstimator(distance, stdDev, xTaskGetTickCount());
     }
@@ -159,4 +163,5 @@ DECK_DRIVER(zranger2_deck);
 
 PARAM_GROUP_START(deck)
 PARAM_ADD(PARAM_UINT8 | PARAM_RONLY, bcZRanger2, &isInit)
+PARAM_ADD(PARAM_FLOAT, h_ceiling, &ceiling_height)
 PARAM_GROUP_STOP(deck)

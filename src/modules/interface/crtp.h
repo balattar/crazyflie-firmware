@@ -30,7 +30,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define CRTP_MAX_DATA_SIZE 30
+#define CRTP_MAX_DATA_SIZE 30 // increase to check larger packet size
 
 #define CRTP_HEADER(port, channel) (((port & 0x0F) << 4) | (channel & 0x0F))
 

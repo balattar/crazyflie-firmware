@@ -302,14 +302,14 @@ static void sensorsTask(void *param)
       }
       /* Gyro */
       sensorData.gyro.x =  (gyroRaw.x - gyroBias.x) * SENSORS_BMI088_DEG_PER_LSB_CFG;
-      sensorData.gyro.y =  (gyroRaw.y - gyroBias.y) * SENSORS_BMI088_DEG_PER_LSB_CFG;
-      sensorData.gyro.z =  (gyroRaw.z - gyroBias.z) * SENSORS_BMI088_DEG_PER_LSB_CFG;
+      sensorData.gyro.y =  -(gyroRaw.y - gyroBias.y) * SENSORS_BMI088_DEG_PER_LSB_CFG;
+      sensorData.gyro.z =  -(gyroRaw.z - gyroBias.z) * SENSORS_BMI088_DEG_PER_LSB_CFG;
       applyAxis3fLpf((lpf2pData*)(&gyroLpf), &sensorData.gyro);
 
       /* Acelerometer */
       accScaled.x = accelRaw.x * SENSORS_BMI088_G_PER_LSB_CFG / accScale;
-      accScaled.y = accelRaw.y * SENSORS_BMI088_G_PER_LSB_CFG / accScale;
-      accScaled.z = accelRaw.z * SENSORS_BMI088_G_PER_LSB_CFG / accScale;
+      accScaled.y = -accelRaw.y * SENSORS_BMI088_G_PER_LSB_CFG / accScale;
+      accScaled.z = -accelRaw.z * SENSORS_BMI088_G_PER_LSB_CFG / accScale;
       sensorsAccAlignToGravity(&accScaled, &sensorData.acc);
       applyAxis3fLpf((lpf2pData*)(&accLpf), &sensorData.acc);
     }

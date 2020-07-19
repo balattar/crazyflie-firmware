@@ -34,6 +34,187 @@ SOFTWARE.
 #define M_PI_2_F (1.57079632679f)
 #endif
 
+// -------------ADDED FUNCTIONS FROM math_linear_algebra.h-------------
+
+static inline double radians2(double degrees) { return ((double)3.14159265358979323846 / 180.0) * degrees; }
+
+// taken from https://www.geeksforgeeks.org/write-memcpy/
+ static inline void myMemCpy(void *dest, void *src, int n)
+{
+     // Typecast src and dest addresses to (char *)
+     char *csrc = (char *)src;
+     char *cdest = (char *)dest;
+
+     // Copy contents of src[] to dest[]
+     for (int i=0; i<n; i++)
+         cdest[i] = csrc[i];
+}
+
+
+
+ static inline void hat(double *result, double *vector)
+{
+    double m[3][3] = {{0,0,0}, {0,0,0}, {0,0,0}};
+
+    m[2][1] = vector[0];
+    m[1][2] = -vector[0];
+    m[0][2] = vector[1];
+    m[2][0] = -vector[1];
+    m[1][0] = vector[2];
+    m[0][1] = -vector[2];
+
+    myMemCpy(result, m, sizeof(m));
+}
+
+ static inline void dehat(double *result, double *matrix)
+{
+    double vector[3];
+    double tmp[3][3];
+
+    myMemCpy(tmp, matrix, sizeof(tmp));
+
+    vector[0] = (tmp[2][1] - tmp[1][2])/2;
+    vector[1] = (tmp[0][2] - tmp[2][0])/2;
+    vector[2] = (tmp[1][0] - tmp[0][1])/2;
+     myMemCpy(result, vector, sizeof(vector));
+}
+
+  static inline double mla_dot(double *v1, double *v2, int n)
+{
+    double v = 0;
+    for(int k=0;k<n;k++)
+    {
+        v += v1[k]*v2[k];
+    }
+
+    return v;
+}
+
+  static inline void matTranspose(double *result, double *matrix, int n)
+{
+    double m[n][n];
+    double tmp[n][n];
+
+    myMemCpy(tmp, matrix, sizeof(tmp));
+
+    for(int i=0; i<n; i++)
+    {
+        for(int j=0; j<n; j++)
+            m[i][j] = tmp[j][i];
+    }
+
+    myMemCpy(result, m, sizeof(m));
+}
+
+  static inline void matAddsMat(double *result, double *m1, double *m2, int size, int flag)
+{
+    double m[size];
+    if (flag ==1)
+    {
+        for(int k=0;k<size;k++)
+            m[k] = m1[k] + m2[k];       // addition
+    }
+    else if(flag ==2)
+    {
+        for(int k=0;k<size;k++)
+            m[k] = m1[k] - m2[k];       // substraction
+    }
+
+    myMemCpy(result, m, sizeof(m));
+}
+
+  static inline void matTimesScalar(double *result, double *m1, double s, int size, int flag)
+{
+    double m[size];
+    if (flag ==1)
+    {
+        for(int k=0;k<size;k++)
+            m[k] = m1[k] * s;       // times
+    }
+    else if(flag ==2)
+    {
+        for(int k=0;k<size;k++)
+            m[k] = m1[k] / s;       // divided by
+    }
+
+    myMemCpy(result, m, sizeof(m));
+}
+
+  static inline void matTimesVec(double *result, double *matrix, double *vector, int n)
+{
+    double v[n];
+    double tmp1[n][n];
+
+    myMemCpy(tmp1, matrix, sizeof(tmp1));
+
+    for(int k=0; k<n; k++)
+        v[k] = mla_dot(tmp1[k], vector, n);
+
+    myMemCpy(result, v, sizeof(v));
+}
+
+  static inline void matTimesMat(double *result, double *m1, double *m2)
+{
+    double m[3][3];
+    double tmp1[3][3];
+    double tmp2[3][3];
+
+    myMemCpy(tmp1, m1, sizeof(tmp1));
+    matTranspose((double *) tmp2, m2, 3);
+
+    for(int i=0; i<3; i++)
+    {
+        for(int j=0; j<3; j++)
+            m[i][j] = mla_dot(tmp1[i], tmp2[j], 3);
+    }
+
+    myMemCpy(result, m, sizeof(m));
+}
+
+  static inline void quat2rotm_Rodrigue(double * result, double * quaternion)
+{
+    double rotm[3][3];
+    double quat[4];
+
+    myMemCpy(quat, quaternion, sizeof(quat));
+
+    double quat_len = (double)sqrt( mla_dot(quat,quat,4) );
+    //std::cout<<"quaternion is: ["<<quat[0]<<", "<<quat[1]<<", "<<quat[2]<<", "<<quat[3]<<"]"<<std::endl;
+    //std::cout<<"quaternion norm: "<<quat_len<<std::endl;
+
+    matTimesScalar(quat, quat, quat_len, 4, 2);
+    //std::cout<<"quaternion normalized is: ["<<quat[0]<<", "<<quat[1]<<", "<<quat[2]<<", "<<quat[3]<<"]"<<std::endl;
+
+    double q0 = quat[0];
+    double q1 = quat[1];
+    double q2 = quat[2];
+    double q3 = quat[3];
+
+    double theta = 2*(double)acos(q0);
+    double omega[3] = {0,0,0};
+    double qvector[3] = {q1,q2,q3};
+    if(theta!=0)
+        matTimesScalar(omega, qvector, (double)sin(theta/2), 3, 2);
+
+    double omega_hat[3][3] = { {0,-omega[2],omega[1]}, {omega[2],0,-omega[0]}, {-omega[1],omega[0],0} };
+
+    double tmp1[3][3];
+    double tmp2[3][3];
+    double tmp3[3][3];
+    double tmp4[3][3];
+
+    double I[3][3] = {{1,0,0}, {0,1,0}, {0,0,1}};
+    matTimesScalar((double *) tmp1,(double *) omega_hat, (double)sin(theta), 3*3, 1);
+    matTimesMat((double *)tmp2, (double *)omega_hat, (double *)omega_hat);
+    matTimesScalar((double *)tmp3, (double *)tmp2, 1-(double)cos(theta), 3*3, 1);
+    matAddsMat((double *) tmp4,(double *) I,(double *) tmp1, 3*3, 1);
+    matAddsMat((double *) rotm,(double *) tmp4,(double *) tmp3, 3*3, 1);
+
+    myMemCpy(result, rotm, sizeof(rotm));
+
+}
+
+// -------------------------End math_linear_algebra----------------------
 
 // ----------------------------- scalars --------------------------------
 

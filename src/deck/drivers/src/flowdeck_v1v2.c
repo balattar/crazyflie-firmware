@@ -109,7 +109,7 @@ static void flowdeckTask(void *param)
       pixelAverages.ptr = (pixelAverages.ptr + 1) % AVERAGE_HISTORY_LENGTH;
 
       flowData.dpixelx = (float)meanX;   // [pixels]
-      flowData.dpixely = (float)meanY;   // [pixels]
+      flowData.dpixely = -(float)meanY;   // [pixels]
 #elif defined(USE_LP_FILTER)
       // Use LP filter measurements
       flowData.dpixelx = LP_CONSTANT * dpixelx_previous + (1.0f - LP_CONSTANT) * (float)accpx;

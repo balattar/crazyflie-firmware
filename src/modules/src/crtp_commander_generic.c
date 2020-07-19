@@ -71,6 +71,8 @@ enum packet_type {
   hoverType         = 5,
   fullStateType     = 6,
   positionType      = 7,
+  attitudeRateType  = 8,
+  gtcType           = 9,
 };
 
 /* ---===== 2 - Decoding functions =====--- */
@@ -367,6 +369,90 @@ static void positionDecoder(setpoint_t *setpoint, uint8_t type, const void *data
   setpoint->attitude.yaw = values->yaw;
 }
 
+/* pitchRateDecoder
+ * Set the pitch rate
+ */
+ struct attitudeRatePacket_s {
+   float rollrate;     // Rate in deg/s
+   float pitchrate;
+   float yawrate;
+   float thrust;
+ } __attribute__((packed));
+static void attitudeRateDecoder(setpoint_t *setpoint, uint8_t type, const void *data, size_t datalen)
+{
+  const struct attitudeRatePacket_s *values = data;
+
+  setpoint->mode.x = modeDisable;
+  setpoint->mode.y = modeDisable;
+  setpoint->mode.z = modeDisable;
+
+  //setpoint->velocity.x = 0;
+  //setpoint->velocity.y = 0;
+
+  setpoint->mode.yaw = modeVelocity;
+  setpoint->mode.roll = modeVelocity;
+  setpoint->mode.pitch = modeVelocity;
+
+  //setpoint->attitude.roll = values->rollrate;
+  //float const millirad2deg = 180.0f / ((float)M_PI * 1000.0f);
+
+  setpoint->attitude.roll = 0;
+  setpoint->attitude.pitch = 0;
+  setpoint->attitude.yaw = 0;
+
+  setpoint->attitudeRate.roll = values->rollrate;
+  setpoint->attitudeRate.pitch = values->pitchrate;
+  setpoint->attitudeRate.yaw = values->yawrate;
+  setpoint->thrust = values->thrust;
+
+
+
+}
+
+/* gtcDecoder
+ * Set commands for gtc controlle
+ * MODE      C1     C2     C3
+ *  2        vx     vy     vz     m/s
+ *  3       eul1   eul2   eul3    rad
+ *  4        w1     w2     w3     rad/s
+ * else      STOP
+ */
+ struct gtcPacket_s {
+   uint16_t mode;
+   float cmd1;     // Rate in deg/s
+   float cmd2;
+   float cmd3;
+ } __attribute__((packed));
+static void gtcDecoder(setpoint_t *setpoint, uint8_t type, const void *data, size_t datalen)
+{
+  const struct gtcPacket_s *values = data;
+  setpoint->gtc_mode = values->mode;
+
+  if (2 == setpoint->gtc_mode)
+  {
+    setpoint->velocity.x = values->cmd1;
+    setpoint->velocity.y = values->cmd2;
+    setpoint->velocity.z = values->cmd3;
+  }
+  else if (3 == setpoint->gtc_mode)
+  {
+    setpoint->attitude.roll = values->cmd1;
+    setpoint->attitude.pitch = values->cmd2;
+    setpoint->attitude.yaw = values->cmd3;
+  }
+  else if (4 == setpoint->gtc_mode)
+  {
+    setpoint->attitudeRate.roll = values->cmd1;
+    setpoint->attitudeRate.pitch = values->cmd2;
+    setpoint->attitudeRate.yaw = values->cmd3;
+  }
+  else
+  {
+    setpoint->thrust = 0;
+  }
+
+}
+
  /* ---===== 3 - packetDecoders array =====--- */
 const static packetDecoder_t packetDecoders[] = {
   [stopType]          = stopDecoder,
@@ -377,6 +463,8 @@ const static packetDecoder_t packetDecoders[] = {
   [hoverType]         = hoverDecoder,
   [fullStateType]     = fullStateDecoder,
   [positionType]      = positionDecoder,
+  [attitudeRateType]  = attitudeRateDecoder,
+  [gtcType]  = gtcDecoder,
 };
 
 /* Decoder switch */
@@ -409,3 +497,4 @@ PARAM_ADD(PARAM_FLOAT, rateYaw, &s_CppmEmuYawMaxRateDps)
 PARAM_ADD(PARAM_FLOAT, angRoll, &s_CppmEmuRollMaxAngleDeg)
 PARAM_ADD(PARAM_FLOAT, angPitch, &s_CppmEmuPitchMaxAngleDeg)
 PARAM_GROUP_STOP(cmdrCPPM)
+// dont seem to be involved in packet decoder for attitude rate
