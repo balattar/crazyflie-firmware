@@ -4,6 +4,33 @@ The documentation for the original package, including some installation instruct
 
 This package contains modified stm32 firmware for the crazyflie. 
 
+## Main Additions to Firmware
+
+1. Setpoint for attitude rate.
+   * This setpoint takes rpy rates and thrust as inputs
+   * Arguments: '''(float rollRate, float PitchRate, float YawRate, float Thrust)'''
+
+2. Setpoint for Geometric Tracking Controller (GTC) command.
+   * This setpoint takes the flight mode and three corresponding commands
+   * Arguments: '''(uint16_t mode, float cmd1, float cmd2, float cmd3)
+   
+Mode | Description | Command 1 | Command 2 | Command 3 | Units
+-------|-------|-------|-------|-------|
+2 | Linear Velocity | Vx | Vy | Vz | m/s
+3 | Attitude | roll | pitch | yaw | rad
+4 | Attitude Rate | rollRate | pitchRate | yawRate | rad/s
+else | Stop | N/A | N/A | N/A | N/A
+
+3. Geometric Tracking Controller added to onboard controller framework
+   * Has 3 Seperate flight modes
+      1. Linear Velocity (mode = 2) 
+      2. Attitude (mode = 3) 
+      3. Attitude Rate (mode = 4) 
+
+4. Boolean parameter to switch between rpyt and pwm commands for the motors
+   * PWM values are stored in the control data struct 
+
+
 ## Paramaters and Logging Variables
 
 The following tables include most newly added parameters and logging variables that support the geometric tracking controller and flipped crazyflie mounting setup.
