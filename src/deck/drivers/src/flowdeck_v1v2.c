@@ -83,6 +83,7 @@ static void flowdeckTask(void *param)
 
     // Flip motion information to comply with sensor mounting
     // (might need to be changed if mounted differently)
+    // need to reverify
     int16_t accpx = -currentMotion.deltaY;
     int16_t accpy = -currentMotion.deltaX;
 
