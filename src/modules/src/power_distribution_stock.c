@@ -85,7 +85,7 @@ void powerStop()
 void powerDistribution(const control_t *control)
 {
 
-  if (!motorCmds) 
+  if (!motorCmds) // normal rpyt commands
   {
     #ifdef QUAD_FORMATION_X
       int16_t r = control->roll / 2.0f;
@@ -110,7 +110,7 @@ void powerDistribution(const control_t *control)
                                  control->yaw);
   #endif
   }
-  else
+  else // direct motor commands
   {
   motorPower.m4 = limitThrust(2*(int32_t)control->thrust) ;
   motorPower.m3 = limitThrust(2*(int32_t)control->yaw) ;
