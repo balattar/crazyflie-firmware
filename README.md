@@ -8,11 +8,18 @@ This package contains modified stm32 firmware for the crazyflie.
 
 1. Setpoint for attitude rate.
    * This setpoint takes rpy rates and thrust as inputs
-   * Arguments: '''(float rollRate, float PitchRate, float YawRate, float Thrust)'''
+   * Arguments: 
+   ```c++
+   (float rollRate, float PitchRate, float YawRate, float Thrust)
+   ```
 
 2. Setpoint for Geometric Tracking Controller (GTC) command.
    * This setpoint takes the flight mode and three corresponding commands
-   * Arguments: '''(uint16_t mode, float cmd1, float cmd2, float cmd3)
+   * Arguments: 
+   ```c++
+   (uint16_t mode, float cmd1, float cmd2, float cmd3)
+   ```
+
    
 Mode | Description | Command 1 | Command 2 | Command 3 | Units |
 ------------ | ------------ | ------------ | ------------ | ------------ | ------------ |
