@@ -8,26 +8,24 @@ This package contains modified stm32 firmware for the crazyflie.
 
 The following tables include any newly added parameters and logging variables that support the geometric tracking controller and crazyflie mounting setup.
 
-Parameter | Group | Type | Location | Description
+Parameter | Group | Type | File | Description
 ------------ | ------------- | ------------- | ------------- | ------------- | 
- h_ceiling | deck | FLOAT | zranger2.c | Defines height of ceiling for relative z position measurement
- CmdMotors | motorPowerSet | UINT8 | power_distribution_stock.c | true to send direct PWM commands (for GTC)
- kp_v | GtcGain | FLOAT | controller_gtc.c | Proportional velocity gain constant
- kp_R | GtcGain | FLOAT | controller_gtc.c | Derivative orientation gain constant
- kd_R | GtcGain | FLOAT | controller_gtc.c | Derivative orientation gain constant
- kd_R2 | GtcGain | FLOAT | controller_gtc.c | Derivative orientation 2 gain constant
+ *h_ceiling* | deck | FLOAT | zranger2.c | Defines height of ceiling for relative z position measurement
+ *CmdMotors* | motorPowerSet | UINT8 | power_distribution_stock.c | true to send direct PWM commands (for GTC)
+ *kp_v* | GtcGain | FLOAT | controller_gtc.c | Proportional velocity gain constant
+ *kp_R* | GtcGain | FLOAT | controller_gtc.c | Derivative orientation gain constant
+ *kd_R* | GtcGain | FLOAT | controller_gtc.c | Derivative orientation gain constant
+ *kd_R2* | GtcGain | FLOAT | controller_gtc.c | Derivative orientation 2 gain constant
+
+To conserve space, not all additional logging variables will be mentioned.
+
+ Log | Group | Type | File | Description
+------------ | ------------- | ------------- | ------------- | ------------- | 
+*f_thrust* | GtcForce | FLOAT | controller_gtc.c | Desired thrust force 
+*tau1* | GtcForce | FLOAT | controller_gtc.c | Desired torque on roll axis
+*tau2* | GtcForce | FLOAT | controller_gtc.c | Desired torque on pitch axis
+*tau3* | GtcForce | FLOAT | controller_gtc.c | Desired torque on yaw axis
+*xy* | stateEstimateZ | UINT32 | stabilizer.c | compressed x and y position
 
 
-
-
-
-
-PARAM_GROUP_START(GtcGain)
-PARAM_ADD(PARAM_FLOAT, kp_v, &kp_v)
-PARAM_ADD(PARAM_FLOAT, kp_R, &kp_R)
-PARAM_ADD(PARAM_FLOAT, kd_R, &kd_R)
-PARAM_ADD(PARAM_FLOAT, kd_R2, &kd_R2)
-PARAM_GROUP_STOP(GtcGain)
-
-## Logging Variables
 
