@@ -46,10 +46,10 @@ Parameter | Group | Type | File | Description
 ------------ | ------------- | ------------- | ------------- | ------------- |
  __*h_ceiling*__ | deck | FLOAT | zranger2.c | Defines height of ceiling for relative z position measurement
  __*CmdMotors*__ | motorPowerSet | UINT8 | power_distribution_stock.c | true to send direct PWM commands (for GTC)
- __*kp_v*__ | GtcGain | FLOAT | controller_gtc.c | Proportional velocity gain constant
- __*kp_R*__ | GtcGain | FLOAT | controller_gtc.c | Derivative orientation gain constant
- __*kd_R*__ | GtcGain | FLOAT | controller_gtc.c | Derivative orientation gain constant
- __*kd_R2*__ | GtcGain | FLOAT | controller_gtc.c | Derivative orientation 2 gain constant
+ __*kp_v*__ | GtcGain | FLOAT | controller_gtc.c | Proportional velocity error gain 
+ __*kp_R*__ | GtcGain | FLOAT | controller_gtc.c | Proportional orientation gain 
+ __*kd_R*__ | GtcGain | FLOAT | controller_gtc.c | Derivative orientation gain (attitude rate control)
+ __*kd_R2*__ | GtcGain | FLOAT | controller_gtc.c | Derivative orientation gain (else)
 
 To conserve space, not all additional logging variables will be mentioned.
 
