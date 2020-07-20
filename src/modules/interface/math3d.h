@@ -35,6 +35,7 @@ SOFTWARE.
 #endif
 
 // -------------ADDED FUNCTIONS FROM math_linear_algebra.h--------------
+// @Pan Liu
 
 static inline double radians2(double degrees) { return ((double)3.14159265358979323846 / 180.0) * degrees; }
 

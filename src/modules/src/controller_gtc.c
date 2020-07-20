@@ -1,22 +1,21 @@
+/* 
+* adapted from crazyflie_gazebo controller 
+* @Pan Liu
+*/
 
 #include "controller_gtc.h"
 #include "stabilizer.h"
 #include "stabilizer_types.h"
 #include "math3d.h"
-//#include "math_linear_algebra.h"
-
 #include "log.h"
 #include "param.h"
 
 #include <math.h>
 #include <stdint.h>
-//#include "math3d.h"
 
 static double state_full[14];
-//static StateFull state_full_structure;
 static float motorspeed[4];
-//static MotorCommand motorspeed_structure;
-//static double control_cmd[5];
+
 static double position[3];
 static double orientation_q[4];
 static double eul[3];
@@ -92,7 +91,6 @@ static float c3;
 
 void controllerGtcInit(void)
 {
-  //static double state_full[14];
   motorspeed[0] = 0;
   motorspeed[1] = 0;
   motorspeed[2] = 0;
@@ -230,7 +228,6 @@ void controllerGtc(control_t *control, setpoint_t *setpoint,
             eul[1] = (double)setpoint->attitude.pitch;
             eul[2] = (double)setpoint->attitude.yaw;
             //eul[0]=0.0;eul[1]=0.0;eul[2]=0.0;
-            //std::cout<<"Attitude command ["<< eul[0]<<", "<< eul[1]<<", "<< eul[2]<<"]"<<std::endl;
             quat2rotm_Rodrigue((double *) R, orientation_q);
             R_d[0][0] = (double)cos(eul[1]);    R_d[0][1] = 0;      R_d[0][2] = (double)sin(eul[1]);
             R_d[1][0] = 0;              R_d[1][1] = 1;      R_d[1][2] = 0;
@@ -246,7 +243,6 @@ void controllerGtc(control_t *control, setpoint_t *setpoint,
             omega_d[1] = (double)setpoint->attitudeRate.pitch;
             omega_d[2] = (double)setpoint->attitudeRate.yaw;
             //omega_d[0]=0.0;omega_d[1]=2.0;omega_d[2]=0.0;
-            //std::cout<<"Omega command ["<< omega_d[0]<<", "<< omega_d[1]<<", "<< omega_d[2]<<"]"<<std::endl;
             quat2rotm_Rodrigue((double *) R, orientation_q);
             R_d[0][0] = R[0][0];    R_d[0][1] = 0;    R_d[0][2] = R[0][2];
             R_d[1][0] = R[1][0];    R_d[1][1] = 1;    R_d[1][2] = R[1][2];
@@ -276,8 +272,6 @@ void controllerGtc(control_t *control, setpoint_t *setpoint,
               //e_omega[0]=0;   e_omega[1]=0;   e_omega[2]=0;
               myMemCpy(e_omega, omega, sizeof(omega));
           }
-          /*if ( (type==4) && (k_run%10 == 1))
-              std::cout<<"e_omega ["<< e_omega[0]<<", "<< e_omega[1]<<", "<< e_omega[2]<<"]"<<std::endl;*/
           //myMemCpy(e_omega, omega, sizeof(omega));                 // e_omega = omega - R'*R_d*omega_d
           matTimesScalar(tmp8, e_R, -kp_R, 3, 1);               // -kp_R * e_R
           if (type==4){
@@ -314,8 +308,6 @@ void controllerGtc(control_t *control, setpoint_t *setpoint,
 
               if(R[2][2]<0)
               {
-                  /*if (k_run%100 == 1)
-                      std::cout<<"Shutdown motors"<<std::endl;*/
                   motorspeed_square[0] = 0;   motorspeed_square[1] = 0;   motorspeed_square[2] = 0;   motorspeed_square[3] = 0;
               }
 
@@ -350,14 +342,6 @@ void controllerGtc(control_t *control, setpoint_t *setpoint,
           m3 = (int16_t)(motorspeed[2]/2);
           m4 = (int16_t)(motorspeed[3]/2);
           // divide by two for 16 bit precsion -> rescale in power distribution
-
-          /*control->thrust = m1;
-          control->roll = m2;
-          control->pitch = m3;
-          control->yaw = m4;*/
-
-
-
           // Change to set *control commands
 
 }
@@ -413,10 +397,3 @@ PARAM_ADD(PARAM_FLOAT, kp_R, &kp_R)
 PARAM_ADD(PARAM_FLOAT, kd_R, &kd_R)
 PARAM_ADD(PARAM_FLOAT, kd_R2, &kd_R2)
 PARAM_GROUP_STOP(GtcGain)
-
-/*
-kp_v = 3;
-kp_R = 1e-5;
-kd_R = 5e-4;
-kd_R2 = 1e-6; //0.000001
-*/

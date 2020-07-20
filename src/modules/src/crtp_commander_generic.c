@@ -418,7 +418,7 @@ static void attitudeRateDecoder(setpoint_t *setpoint, uint8_t type, const void *
  */
  struct gtcPacket_s {
    uint16_t mode;
-   float cmd1;     // Rate in deg/s
+   float cmd1;    
    float cmd2;
    float cmd3;
  } __attribute__((packed));
