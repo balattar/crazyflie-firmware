@@ -17,17 +17,6 @@ typedef struct _MotorCommand {
 } MotorCommand;
 
 
-/*void myMemCpy (void *dest, void *src, int n);
-void hat(double *result, double *vector);
-void dehat(double *result, double *matrix);
-double mla_dot(double *v1, double *v2, int n);
-void matTranspose(double *result, double *matrix, int n);
-void matAddsMat(double *result, double *m1, double *m2, int size, int flag);
-void matTimesScalar(double *result, double *m1, double s, int size, int flag);
-void matTimesVec(double *result, double *matrix, double *vector, int n);
-void matTimesMat(double *result, double *m1, double *m2);
-void quat2rotm_Rodrigue(double * result, double * quaternion);
-*/
 
 void controllerGtcInit(void);
 bool controllerGtcTest(void);

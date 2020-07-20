@@ -83,11 +83,7 @@ static int16_t m2;
 static int16_t m3;
 static int16_t m4;
 
-
 static float RREV;
-
-static float sin1;
-static float cos1;
 
 static uint16_t type;
 static float c1;
@@ -146,9 +142,9 @@ void controllerGtc(control_t *control, setpoint_t *setpoint,
                                          const uint32_t tick)
 {
           // Need to enter state_full information from state esimators (*sesnors / *state)
-      if (RATE_DO_EXECUTE(ATTITUDE_RATE, tick)) {
+      if (RATE_DO_EXECUTE(ATTITUDE_RATE, tick)) { // 500 Hz
 
-
+          
 
           state_full[0] = (double)state->position.x;
           state_full[1] = (double)state->position.y;
@@ -236,8 +232,6 @@ void controllerGtc(control_t *control, setpoint_t *setpoint,
             //eul[0]=0.0;eul[1]=0.0;eul[2]=0.0;
             //std::cout<<"Attitude command ["<< eul[0]<<", "<< eul[1]<<", "<< eul[2]<<"]"<<std::endl;
             quat2rotm_Rodrigue((double *) R, orientation_q);
-            cos1 = cos(eul[1]);
-            sin1 = sin(eul[1]);
             R_d[0][0] = (double)cos(eul[1]);    R_d[0][1] = 0;      R_d[0][2] = (double)sin(eul[1]);
             R_d[1][0] = 0;              R_d[1][1] = 1;      R_d[1][2] = 0;
             R_d[2][0] = -(double)sin(eul[1]);   R_d[2][1] = 0;      R_d[2][2] = (double)cos(eul[1]);

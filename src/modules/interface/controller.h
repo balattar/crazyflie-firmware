@@ -30,6 +30,7 @@
 //#include "math_linear_algebra.h"
 
 
+// add GTC type controller
 typedef enum {
   ControllerTypeAny,
   ControllerTypeGTC,
