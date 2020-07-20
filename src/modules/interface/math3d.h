@@ -34,7 +34,7 @@ SOFTWARE.
 #define M_PI_2_F (1.57079632679f)
 #endif
 
-// -------------ADDED FUNCTIONS FROM math_linear_algebra.h-------------
+// -------------ADDED FUNCTIONS FROM math_linear_algebra.h--------------
 
 static inline double radians2(double degrees) { return ((double)3.14159265358979323846 / 180.0) * degrees; }
 
