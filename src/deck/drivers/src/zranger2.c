@@ -57,7 +57,7 @@ static uint16_t range_last = 0;
 
 static bool isInit;
 
-static float ceiling_height;
+static float ceiling_height; // add ceiling height variable
 
 NO_DMA_CCM_SAFE_ZERO_INIT static VL53L1_Dev_t dev;
 
@@ -136,12 +136,13 @@ void zRanger2Task(void* arg)
     vTaskDelayUntil(&lastWakeTime, M2T(25));
 
     range_last = zRanger2GetMeasurementAndRestart(&dev);
-    rangeSet(rangeUp, range_last / 1000.0f);
+    rangeSet(rangeUp, range_last / 1000.0f); // flow deck mounted on top
 
     // check if range is feasible and push into the estimator
     // the sensor should not be able to measure >5 [m], and outliers typically
     // occur as >8 [m] measurements
     if (range_last < RANGE_OUTLIER_LIMIT) {
+      // adjust to measure distance from ceiling
       float distance = ceiling_height - (float)range_last * 0.001f; // Scale from [mm] to [m]
       float stdDev = expStdA * (1.0f  + expf( expCoeff * (distance - expPointA)));
       rangeEnqueueDownRangeInEstimator(distance, stdDev, xTaskGetTickCount());
