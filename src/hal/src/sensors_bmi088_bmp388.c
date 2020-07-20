@@ -300,6 +300,8 @@ static void sensorsTask(void *param)
       {
          processAccScale(accelRaw.x, accelRaw.y, accelRaw.z);
       }
+
+      // Flip x and y to adjust for crazyflie config (flipped)
       /* Gyro */
       sensorData.gyro.x =  (gyroRaw.x - gyroBias.x) * SENSORS_BMI088_DEG_PER_LSB_CFG;
       sensorData.gyro.y =  -(gyroRaw.y - gyroBias.y) * SENSORS_BMI088_DEG_PER_LSB_CFG;
