@@ -14,8 +14,8 @@ This package contains modified stm32 firmware for the crazyflie.
    * This setpoint takes the flight mode and three corresponding commands
    * Arguments: '''(uint16_t mode, float cmd1, float cmd2, float cmd3)
    
-Mode | Description | Command 1 | Command 2 | Command 3 | Units
--------|-------|-------|-------|-------|
+Mode | Description | Command 1 | Command 2 | Command 3 | Units |
+------------ | ------------ | ------------ | ------------ | ------------ | ------------ |
 2 | Linear Velocity | Vx | Vy | Vz | m/s
 3 | Attitude | roll | pitch | yaw | rad
 4 | Attitude Rate | rollRate | pitchRate | yawRate | rad/s
@@ -36,7 +36,7 @@ else | Stop | N/A | N/A | N/A | N/A
 The following tables include most newly added parameters and logging variables that support the geometric tracking controller and flipped crazyflie mounting setup.
 
 Parameter | Group | Type | File | Description
------------- | ------------- | ------------- | ------------- | ------------- | 
+------------ | ------------- | ------------- | ------------- | ------------- |
  __*h_ceiling*__ | deck | FLOAT | zranger2.c | Defines height of ceiling for relative z position measurement
  __*CmdMotors*__ | motorPowerSet | UINT8 | power_distribution_stock.c | true to send direct PWM commands (for GTC)
  __*kp_v*__ | GtcGain | FLOAT | controller_gtc.c | Proportional velocity gain constant
