@@ -167,6 +167,7 @@ static void compressState()
   stateCompressed.ratePitch = -sensorData.gyro.y * deg2millirad;
   stateCompressed.rateYaw = sensorData.gyro.z * deg2millirad;
 
+  // x and y compression
   float xnew, ynew;
   xnew = state.position.x*1000.0f + 32767.0f;
   ynew = state.position.y*1000.0f + 32767.0f;
