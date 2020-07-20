@@ -1,6 +1,6 @@
 # Crazyflie Firmware (modified)  [![Build Status](https://api.travis-ci.org/bitcraze/crazyflie-firmware.svg)](https://travis-ci.org/bitcraze/crazyflie-firmware)
 
-The documentation for the original package, including some installation instructions: http://crazyswarm.readthedocs.io/en/latest/.
+The documentation for the original package, including some installation instructions: https://github.com/bitcraze/crazyflie-firmware.
 
 This package contains modified stm32 firmware for the crazyflie. 
 
@@ -9,7 +9,7 @@ This package contains modified stm32 firmware for the crazyflie.
 The following tables include any newly added parameters and logging variables that support the geometric tracking controller and crazyflie mounting setup.
 
 Parameter | Group | Type | Location | Description
------------- | -------------
+------------ | ------------- | ------------- | ------------- | ------------- | 
  h_ceiling | deck | FLOAT | zranger2.c | Defines height of ceiling for relative z position measurement
  CmdMotors | motorPowerSet | UINT8 | power_distribution_stock.c | true to send direct PWM commands (for GTC)
  kp_v | GtcGain | FLOAT | controller_gtc.c | Proportional velocity gain constant
