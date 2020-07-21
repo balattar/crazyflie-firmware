@@ -34,8 +34,6 @@ else | Stop | N/A | N/A | N/A | N/A
       2. Attitude (mode = 3) 
       3. Attitude Rate (mode = 4) 
 
-4. Boolean parameter to switch between rpyt and pwm commands for the motors
-   * PWM values are stored in the control data struct 
 
 
 ## Added Paramaters and Logging Variables
@@ -45,7 +43,6 @@ The following tables include most newly added parameters and logging variables t
 Parameter | Group | Type | File | Description
 ------------ | ------------- | ------------- | ------------- | ------------- |
  __*h_ceiling*__ | deck | FLOAT | zranger2.c | Defines height of ceiling for relative z position measurement
- __*CmdMotors*__ | motorPowerSet | UINT8 | power_distribution_stock.c | true to send direct PWM commands (for GTC)
  __*kp_v*__ | GtcGain | FLOAT | controller_gtc.c | Proportional velocity error gain 
  __*kp_R*__ | GtcGain | FLOAT | controller_gtc.c | Proportional orientation gain 
  __*kd_R*__ | GtcGain | FLOAT | controller_gtc.c | Derivative orientation gain (attitude rate control)
@@ -69,6 +66,8 @@ Parameter | Group | Type | File | Description
 ------------ | ------------- | ------------- | ------------- | ------------- |
  __*controller*__ | stabilizer | UINT8 | stabilizer.c | Controller Type (1:GTC, 2:Mel, 3:INDI, 4:PID)
  __*estimator*__ | stabilizer | UINT8 | stabilizer.c | Estimator Type (1:Complementary, 2:Kalman)
+  __*enHighLevel*__ | commander | UINT8 | commander.c | Enable high level commands (1)
+
 
 
 
