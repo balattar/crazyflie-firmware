@@ -52,6 +52,8 @@
 #include "statsCnt.h"
 #include "static_mem.h"
 
+#include "filter_attitude_rate.h"
+
 static uint32_t xy;
 static bool isInit;
 static bool emergencyStop = false;
@@ -301,7 +303,12 @@ static void stabilizerTask(void* param)
 
       stateEstimator(&state, &sensorData, &control, tick);
       compressState();
-      RREVst = (state.velocity.z)/(1.50f-state.position.z);
+
+      // Execute attitude rate filter at 1000 Hz
+      filter_attitudeRate2(&state,&sensorData,tick);
+
+      
+
       commanderGetSetpoint(&setpoint, &state);
       compressSetpoint();
 
@@ -714,3 +721,7 @@ LOG_ADD(LOG_FLOAT, c1, &setpoint.velocity.x)
 LOG_ADD(LOG_FLOAT, c2, &setpoint.velocity.y)
 LOG_ADD(LOG_FLOAT, c3, &setpoint.velocity.z)
 LOG_GROUP_STOP(stabg)
+
+LOG_GROUP_START(rateFilter)
+LOG_ADD(LOG_FLOAT, pitch, &state.attitudeRate.pitch)
+LOG_GROUP_STOP(rateFilter)
