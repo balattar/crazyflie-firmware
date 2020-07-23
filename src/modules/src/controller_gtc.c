@@ -286,11 +286,26 @@ void controllerGtc(control_t *control, setpoint_t *setpoint,
         tau1 = (float)tau[0];
         tau2 = (float)tau[1];
         tau3 = (float)tau[2];
+        /*
+        uint32_t scalePWM = 10000;
+        uint32_t minPWM = 5000;
 
-        control->thrust = f_thrust;
-        control->roll = tau[0];
-        control->pitch = tau[1];
-        control->yaw = tau[2];
+        control->thrust = scalePWM*f_thrust;
+        control->roll = scalePWM*tau[0];
+        control->pitch = scalePWM*tau[1];
+        control->yaw = scalePWM*tau[2];
+
+        if ( (control->thrust < minPWM && control->roll < minPWM
+            && control->pitch < minPWM && control->yaw < minPWM) 
+              || (type != 1 && type != 2 && type != 3 && type != 4) )
+        {
+          control->thrust = 0;
+          control->roll = 0;
+          control->pitch = 0;
+          control->yaw = 0;
+
+        }*/
+
     }
 }
 
