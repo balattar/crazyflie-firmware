@@ -283,18 +283,21 @@ void controllerGtc(control_t *control, setpoint_t *setpoint,
 
         }
 
+        f1 = (float)f_thrust;
         tau1 = (float)tau[0];
         tau2 = (float)tau[1];
         tau3 = (float)tau[2];
-        /*
-        uint32_t scalePWM = 10000;
-        uint32_t minPWM = 5000;
+        
+
+        uint32_t scalePWM = 10000; // temporary
+        uint32_t minPWM = 1000; // nonlinear below 
 
         control->thrust = scalePWM*f_thrust;
         control->roll = scalePWM*tau[0];
         control->pitch = scalePWM*tau[1];
         control->yaw = scalePWM*tau[2];
 
+        // shutoff motors if low pwm or incorrect mode
         if ( (control->thrust < minPWM && control->roll < minPWM
             && control->pitch < minPWM && control->yaw < minPWM) 
               || (type != 1 && type != 2 && type != 3 && type != 4) )
@@ -304,7 +307,7 @@ void controllerGtc(control_t *control, setpoint_t *setpoint,
           control->pitch = 0;
           control->yaw = 0;
 
-        }*/
+        }
 
     }
 }
